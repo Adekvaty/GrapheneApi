@@ -15,18 +15,17 @@ class CreateClothes(graphene.Mutation):
 
     clothes = graphene.Field(ClothesModelType)
 
-    def mutate(self, info, type, id, name, brand, price, material):
-        brand = Brand.objects.get(id=id)
+    def mutate(self, info, type, name, brand, price, material):
+        brand = Brand.objects.get(id=brand)
 
         clothes = Clothes.objects.create(
-            info=info, 
             type=type, 
-            name=name, 
             brand=brand, 
+            name=name, 
             price=price, 
             material=material
         )
-        clothes.save()
+
         return CreateClothes(clothes=clothes)
     
 
