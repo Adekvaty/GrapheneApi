@@ -15,7 +15,7 @@ class CreateClothes(graphene.Mutation):
 
     clothes = graphene.Field(ClothesModelType)
 
-    def mutate(self, info, type, name, brand, price, material):
+    def mutate(self, info, type, id, name, brand, price, material):
         brand = Brand.objects.get(id=id)
 
         clothes = Clothes.objects.create(
@@ -45,7 +45,8 @@ class UpdateClothes(graphene.Mutation):
         clothes = Clothes.objects.get(id=id)
 
         if brand_id:
-            Brand.objects.get(id=brand_id)
+            brand = Brand.objects.get(id=brand_id)
+            clothes.brand = brand
 
         if name:
             clothes.name = name
