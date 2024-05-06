@@ -5,6 +5,29 @@ from main.models import Brand, Clothes
 from grapheneapi.modeltype import BrandModelType, ClothesModelType
 
 
+class CreateClothes(graphene.Mutation):
+    class Arguments:
+        type = graphene.String(required=True)
+        name = graphene.String(required=True)
+        brand = graphene.ID(required=True)
+        price = graphene.Decimal(required=True)
+        material = graphene.String(required=True)
+
+    clothes = graphene.Field(ClothesModelType)
+
+    def mutate(self, info, type, name, brand, price, material):
+        clothes = Clothes.objects.create(
+            info=info, 
+            type=type, 
+            name=name, 
+            brand=brand, 
+            price=price, 
+            material=material
+        )
+        clothes.save()
+        return CreateClothes(clothes=clothes)
+    
+
 class CreateBrand(graphene.Mutation):
     class Arguments:
         # Аргументы которую далжен заполнить пользователь для создания бренда
@@ -17,7 +40,7 @@ class CreateBrand(graphene.Mutation):
     # после создания 
     brand = graphene.Field(BrandModelType)
 
-    # Тут мы делаем действие и функция mutate всегда с перва делжна принемать
+    # Тут мы делаем действие и функция mutate всегда с перва должна принемать
     # такие параметры как self, info дальше уже в зависимосьти от аргументов
     def mutate(self, info, name, country):
         # Тут мы создаем бренд только говорил name=name и country=country 
@@ -73,3 +96,5 @@ class Mutation(graphene.ObjectType):
     create_brand = CreateBrand.Field()
     update_brand = UpdateBrand.Field()
     delete_brand = DeleteBrand.Field()
+
+    create_clothes = CreateClothes.Field()
