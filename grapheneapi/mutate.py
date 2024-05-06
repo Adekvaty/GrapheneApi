@@ -7,15 +7,17 @@ from grapheneapi.modeltype import BrandModelType, ClothesModelType
 
 class CreateClothes(graphene.Mutation):
     class Arguments:
+        brand = graphene.ID(required=True)
         type = graphene.String(required=True)
         name = graphene.String(required=True)
-        brand = graphene.ID(required=True)
         price = graphene.Decimal(required=True)
         material = graphene.String(required=True)
 
     clothes = graphene.Field(ClothesModelType)
 
     def mutate(self, info, type, name, brand, price, material):
+        brand = Brand.objects.get(id=id)
+
         clothes = Clothes.objects.create(
             info=info, 
             type=type, 
@@ -26,6 +28,49 @@ class CreateClothes(graphene.Mutation):
         )
         clothes.save()
         return CreateClothes(clothes=clothes)
+    
+
+class UpdateClothes(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID(required=True)
+        type = graphene.String()
+        name = graphene.String()
+        brand_id = graphene.ID()
+        price = graphene.Decimal()
+        material = graphene.String()
+
+    clothes = graphene.Field(ClothesModelType)
+
+    def mutate(self, info, id, name=None, type=None, price=None, material=None):
+        clothes = Brand.objects.get(id=id)
+
+        if name:
+            clothes.name = name
+
+        elif type:
+            clothes.type = type
+
+        elif price:
+            clothes.price = price
+
+        elif material:
+            clothes.material = material
+
+        clothes.save()
+        return UpdateClothes(clothes=clothes)
+    
+
+class DeleteClothes(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID(required=True)
+
+    clothes = graphene.Field(ClothesModelType)
+    success = graphene.Boolean()
+
+    def mutate(self, info, id):
+        clothes = Clothes.objects.get(id=id)
+        clothes.delete()
+        return DeleteClothes(success=True)
     
 
 class CreateBrand(graphene.Mutation):
@@ -98,3 +143,5 @@ class Mutation(graphene.ObjectType):
     delete_brand = DeleteBrand.Field()
 
     create_clothes = CreateClothes.Field()
+    update_clothes = UpdateClothes.Field()
+    delete_clothes = DeleteClothes.Field()
