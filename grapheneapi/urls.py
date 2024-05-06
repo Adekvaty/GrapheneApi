@@ -5,9 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from grapheneapi.schema import Query
+from grapheneapi.mutate import Mutation
 
 
-schema = graphene.Schema(query=Query)
+schema = graphene.Schema(query=Query, mutation=Mutation, auto_camelcase=True)
 
 
 class CustomGraphQLView(GraphQLView):
