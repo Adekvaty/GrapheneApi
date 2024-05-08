@@ -143,18 +143,18 @@ class CreatePerson(graphene.Mutation):
     class Arguments:
         first_name = graphene.String(required=True)
         last_name = graphene.String(required=True)
-        has_licens = graphene.Boolean(required=True)
-        icense_cate = graphene.String(required=True)
+        has_license = graphene.Boolean(required=True)
+        license_category = graphene.String(required=True)
 
     person = graphene.Field(PersonModelType)
 
-    def mutate(self, info, first_name, last_name, has_licens, icense_cate):
+    def mutate(self, info, first_name, last_name, has_license, license_category):
        
         person = Person.objects.create(
             first_name = first_name,
             last_name = last_name,
-            has_licens = has_licens,
-            icense_cate = icense_cate      
+            has_license = has_license,
+            license_category = license_category      
         )
 
         return CreatePerson(person=person)
@@ -170,7 +170,7 @@ class UpdatePerson(graphene.Mutation):
     person = graphene.Field(PersonModelType)
 
 
-    def mutate(self, info, id, first_name=None, last_name=None, has_licens=None, icense_cate=None):
+    def mutate(self, info, id, first_name=None, last_name=None, has_license=None, license_category=None):
 
         person = Person.objects.get(id=id)
 
@@ -180,11 +180,11 @@ class UpdatePerson(graphene.Mutation):
         elif last_name:
             person.last_name = first_name
 
-        elif has_licens:
-            person.has_licens = has_licens
+        elif has_license:
+            person.has_license = has_license
 
-        elif icense_cate:
-            person.icense_cate = icense_cate
+        elif license_category:
+            person.license_category = license_category
 
         person.save()
         return UpdatePerson(person=person)
